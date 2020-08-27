@@ -13,8 +13,16 @@ Original file is located at
 import numpy as np
 import pandas as pd
 from sodapy import Socrata
+import unicodedata
 
-"""**Leyendo los datos 'Casos positivos de COVID-19 en Colombia'**"""
+province_name_map = {
+    "Bogotá D.C.": "SANTAFE DE BOGOTA D.C",
+    "Barranquilla D.E.": "ATLANTICO",
+    "Cartagena D.T. y C.": "BOLIVAR",
+    "Santa Marta D.T. y C.": "MAGDALENA",
+    "Buenaventura D.E.": "VALLE DEL CAUCA"
+}
+
 
 socrata_domain = "www.datos.gov.co"
 socrata_dataset_identifier = "gt2j-8ykr"
@@ -22,6 +30,12 @@ socrata_dataset_identifier = "gt2j-8ykr"
 client = Socrata(socrata_domain, None)
 results = client.get(socrata_dataset_identifier,limit=1000000000)
 df = pd.DataFrame.from_dict(results)
+# df.to_csv("data.csv")
+# df = pd.read_csv("data.csv")
+
+df["sexo"] = df["sexo"].apply(lambda x: "Masculino" if x.upper() == "M" else "Femenino")
+df["departamento"] = df["departamento"].apply(lambda x: province_name_map.get(x, unicodedata.normalize('NFKD', x).encode('ASCII', 'ignore').decode('utf-8')).upper())
+cases_by_province = df.groupby(["departamento"]).count()
 df.shape
 
 df.columns

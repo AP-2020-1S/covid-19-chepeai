@@ -1,0 +1,118 @@
+const provinceData = {{ cases_by_province.to_dict("index") }}
+const countrySVG = document.getElementById("country")
+const total = document.getElementById("total")
+const recovered = document.getElementById("recovered")
+const death = document.getElementById("deaths")
+const regionName = document.getElementById("region-name")
+const width = window.outerWidth
+const height = 500
+let centered;
+
+console.log(width)
+
+const projection = d3.geo.mercator()
+  .scale(1500)
+  // Center the Map in Colombia
+  .center([-74, 4.5])
+  .translate([width / 2, height / 2])
+
+const path = d3.geo.path()
+  .projection(projection);
+
+// Set svg width & height
+const svg = d3.select('#country')
+  .attr('width', width)
+  .attr('height', height);
+
+// Add background
+svg.append('rect')
+  .attr('class', 'background')
+  .attr('width', width)
+  .attr('height', height)
+  .attr('fill', 'transparent')
+  .on('click', clicked);
+
+const g = svg.append('g');
+
+const effectLayer = g.append('g')
+  .classed('effect-layer', true);
+
+const mapLayer = g.append('g')
+  .classed('map-layer', true);
+
+const dummyText = g.append('text')
+  .classed('dummy-text', true)
+  .attr('x', 10)
+  .attr('y', 30)
+  .style('opacity', 0);
+
+// Load map data
+d3.json('https://gist.githubusercontent.com/john-guerra/43c7656821069d00dcbc/raw/3aadedf47badbdac823b00dbe259f6bc6d9e1899/colombia.geo.json', function(error, mapData) {
+  var features = mapData.features;
+  console.log(features.find(f => f.properties.NOMBRE_DPT === "ARCHIPIELAGO DE SAN ANDRES PROVIDENCIA Y SANTA CATALINA"))
+
+
+  // Draw each province as a path
+  mapLayer.selectAll('path')
+      .data(features)
+    .enter().append('path')
+      .attr('d', path)
+      .attr('vector-effect', 'non-scaling-stroke')
+      .style('fill', "#baf2bbff")
+      .style('stroke', '#2d3142ff')
+      .on('mouseover', mouseover)
+      .on('mouseout', mouseout)
+      .on('click', clicked);
+});
+
+// When clicked, zoom in
+function clicked(d) {
+  let x, y, k;
+  const province = d.properties && d.properties.NOMBRE_DPT
+
+  // Compute centroid of the selected path
+  if (d && centered !== d) {
+    var centroid = path.centroid(d);
+    x = centroid[0];
+    y = centroid[1];
+    k = 4;
+    centered = d;
+  } else {
+    x = width / 2;
+    y = height / 2;
+    k = 1;
+    centered = null;
+  }
+
+  // Highlight the clicked province
+  mapLayer.selectAll('path')
+    .style('fill', function(d) {return centered && d === centered ? '#D5708B' : "#baf2bbff";});
+
+  // Zoom
+  g.transition()
+    .duration(750)
+    .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + k + ')translate(' + -x + ',' + -y + ')');
+
+  if (centered) {
+    regionName.innerText = _.capitalize(province)
+    total.innerText = provinceData[province]["fecha_reporte_web"];
+    recovered.innerText = provinceData[province]["fecha_recuperado"];
+    death.innerText = provinceData[province]["fecha_de_muerte"];
+  } else {
+    regionName.innerText = "Seleccione un departamento"
+    total.innerText = {{ data | length }};
+    recovered.innerText = {{ data.dropna(subset=["fecha_recuperado"]) | length }};
+    death.innerText = {{ data.dropna(subset=["fecha_de_muerte"]) | length }};
+  }
+}
+
+function mouseover(d){
+  // Highlight hovered province
+  d3.select(this).style('fill', 'orange');
+}
+
+function mouseout(d){
+  // Reset province color
+  mapLayer.selectAll('path')
+    .style('fill', function(d){return centered && d===centered ? '#D5708B' : "#baf2bbff"});
+}

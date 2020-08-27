@@ -1,11 +1,188 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Analitica Predictiva</title>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
+  </head>
+  <body>
+        <nav class="navbar is-dark" role="navigation" aria-label="main navigation">l
+  <div class="navbar-brand">
+    <a class="navbar-item" href="index.html">
+      <b>ANALITICA PREDICTIVA 2020-1S</b>
+    </a>    
+  </div>
+  <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-end">
+        <a class="navbar-item" href="about.html">
+            About
+        </a>
+    </div>
+  </div>
+</nav>
+  <section class="section">
+    
+<div class="columns">
+  <div class="column">
+    <svg id="country"></svg>
+  </div>
+</div>
 
-<h1>Header de prueba para GitHub Pages</h1>
+<div class="info">
+  <h2 class="title" id="region-name"></h2>
 
-</body>
+  <div class="columns">
+    <div class="column">
+      <div class="tile is-ancestor has-text-centered">
+        <article class="tile is-child notification is-warning">
+          <p class="title">Casos reportados</p>
+          <p class="subtitle" id="total">562128</p>
+        </article>
+      </div>
+    </div>
+    <div class="column">
+      <div class="tile is-ancestor has-text-centered">
+        <article class="tile is-child notification is-success">
+          <p class="title">Recuperados</p>
+          <p class="subtitle" id="recovered">395475</p>
+        </article>
+      </div>
+    </div>
+    <div class="column">
+      <div class="tile is-ancestor has-text-centered">
+        <article class="tile is-child notification is-danger">
+          <p class="title">Fallecidos</p>
+          <p class="subtitle" id="deaths">18931</p>
+        </article>
+      </div>
+    </div>
+  </div>
+  <script>
+    const provinceData = {'AMAZONAS': {'Unnamed: 0': 2691, 'id_de_caso': 2691, 'fecha_de_notificaci_n': 2691, 'c_digo_divipola': 2691, 'ciudad_de_ubicaci_n': 2691, 'atenci_n': 2689, 'edad': 2691, 'sexo': 2691, 'tipo': 2691, 'estado': 2689, 'pa_s_de_procedencia': 30, 'fis': 2691, 'fecha_diagnostico': 2578, 'fecha_recuperado': 2539, 'fecha_reporte_web': 2691, 'tipo_recuperaci_n': 2539, 'codigo_departamento': 2691, 'codigo_pais': 30, 'pertenencia_etnica': 2454, 'nombre_grupo_etnico': 933, 'fecha_de_muerte': 109}, 'ANTIOQUIA': {'Unnamed: 0': 72915, 'id_de_caso': 72915, 'fecha_de_notificaci_n': 72915, 'c_digo_divipola': 72915, 'ciudad_de_ubicaci_n': 72915, 'atenci_n': 72825, 'edad': 72915, 'sexo': 72915, 'tipo': 72915, 'estado': 72819, 'pa_s_de_procedencia': 142, 'fis': 72915, 'fecha_diagnostico': 72660, 'fecha_recuperado': 53243, 'fecha_reporte_web': 72915, 'tipo_recuperaci_n': 53243, 'codigo_departamento': 72915, 'codigo_pais': 142, 'pertenencia_etnica': 31189, 'nombre_grupo_etnico': 292, 'fecha_de_muerte': 1584}, 'ARAUCA': {'Unnamed: 0': 784, 'id_de_caso': 784, 'fecha_de_notificaci_n': 784, 'c_digo_divipola': 784, 'ciudad_de_ubicaci_n': 784, 'atenci_n': 783, 'edad': 784, 'sexo': 784, 'tipo': 784, 'estado': 782, 'pa_s_de_procedencia': 0, 'fis': 784, 'fecha_diagnostico': 784, 'fecha_recuperado': 502, 'fecha_reporte_web': 784, 'tipo_recuperaci_n': 502, 'codigo_departamento': 784, 'codigo_pais': 0, 'pertenencia_etnica': 212, 'nombre_grupo_etnico': 8, 'fecha_de_muerte': 16}, 'ARCHIPIELAGO DE SAN ANDRES PROVIDENCIA Y SANTA CATALINA': {'Unnamed: 0': 172, 'id_de_caso': 172, 'fecha_de_notificaci_n': 172, 'c_digo_divipola': 172, 'ciudad_de_ubicaci_n': 172, 'atenci_n': 171, 'edad': 172, 'sexo': 172, 'tipo': 172, 'estado': 171, 'pa_s_de_procedencia': 3, 'fis': 172, 'fecha_diagnostico': 172, 'fecha_recuperado': 62, 'fecha_reporte_web': 172, 'tipo_recuperaci_n': 62, 'codigo_departamento': 172, 'codigo_pais': 3, 'pertenencia_etnica': 38, 'nombre_grupo_etnico': 0, 'fecha_de_muerte': 0}, 'ATLANTICO': {'Unnamed: 0': 63255, 'id_de_caso': 63255, 'fecha_de_notificaci_n': 63255, 'c_digo_divipola': 63255, 'ciudad_de_ubicaci_n': 63255, 'atenci_n': 63071, 'edad': 63255, 'sexo': 63255, 'tipo': 63255, 'estado': 63056, 'pa_s_de_procedencia': 31, 'fis': 63255, 'fecha_diagnostico': 61455, 'fecha_recuperado': 55566, 'fecha_reporte_web': 63255, 'tipo_recuperaci_n': 55563, 'codigo_departamento': 63255, 'codigo_pais': 31, 'pertenencia_etnica': 47737, 'nombre_grupo_etnico': 934, 'fecha_de_muerte': 2988}, 'BOLIVAR': {'Unnamed: 0': 24158, 'id_de_caso': 24158, 'fecha_de_notificaci_n': 24158, 'c_digo_divipola': 24158, 'ciudad_de_ubicaci_n': 24158, 'atenci_n': 24103, 'edad': 24158, 'sexo': 24158, 'tipo': 24158, 'estado': 24097, 'pa_s_de_procedencia': 20, 'fis': 24158, 'fecha_diagnostico': 23666, 'fecha_recuperado': 20767, 'fecha_reporte_web': 24158, 'tipo_recuperaci_n': 20766, 'codigo_departamento': 24158, 'codigo_pais': 20, 'pertenencia_etnica': 15899, 'nombre_grupo_etnico': 103, 'fecha_de_muerte': 723}, 'BOYACA': {'Unnamed: 0': 3347, 'id_de_caso': 3347, 'fecha_de_notificaci_n': 3347, 'c_digo_divipola': 3347, 'ciudad_de_ubicaci_n': 3347, 'atenci_n': 3335, 'edad': 3347, 'sexo': 3347, 'tipo': 3347, 'estado': 3331, 'pa_s_de_procedencia': 3, 'fis': 3347, 'fecha_diagnostico': 3339, 'fecha_recuperado': 1645, 'fecha_reporte_web': 3347, 'tipo_recuperaci_n': 1645, 'codigo_departamento': 3347, 'codigo_pais': 3, 'pertenencia_etnica': 1022, 'nombre_grupo_etnico': 3, 'fecha_de_muerte': 77}, 'CALDAS': {'Unnamed: 0': 2474, 'id_de_caso': 2474, 'fecha_de_notificaci_n': 2474, 'c_digo_divipola': 2474, 'ciudad_de_ubicaci_n': 2474, 'atenci_n': 2463, 'edad': 2474, 'sexo': 2474, 'tipo': 2474, 'estado': 2459, 'pa_s_de_procedencia': 13, 'fis': 2474, 'fecha_diagnostico': 2463, 'fecha_recuperado': 1325, 'fecha_reporte_web': 2474, 'tipo_recuperaci_n': 1325, 'codigo_departamento': 2474, 'codigo_pais': 13, 'pertenencia_etnica': 914, 'nombre_grupo_etnico': 74, 'fecha_de_muerte': 53}, 'CAQUETA': {'Unnamed: 0': 5179, 'id_de_caso': 5179, 'fecha_de_notificaci_n': 5179, 'c_digo_divipola': 5179, 'ciudad_de_ubicaci_n': 5179, 'atenci_n': 5168, 'edad': 5179, 'sexo': 5179, 'tipo': 5179, 'estado': 5168, 'pa_s_de_procedencia': 1, 'fis': 5179, 'fecha_diagnostico': 5176, 'fecha_recuperado': 3220, 'fecha_reporte_web': 5179, 'tipo_recuperaci_n': 3220, 'codigo_departamento': 5179, 'codigo_pais': 1, 'pertenencia_etnica': 998, 'nombre_grupo_etnico': 31, 'fecha_de_muerte': 183}, 'CASANARE': {'Unnamed: 0': 914, 'id_de_caso': 914, 'fecha_de_notificaci_n': 914, 'c_digo_divipola': 914, 'ciudad_de_ubicaci_n': 914, 'atenci_n': 913, 'edad': 914, 'sexo': 914, 'tipo': 914, 'estado': 912, 'pa_s_de_procedencia': 1, 'fis': 914, 'fecha_diagnostico': 914, 'fecha_recuperado': 536, 'fecha_reporte_web': 914, 'tipo_recuperaci_n': 536, 'codigo_departamento': 914, 'codigo_pais': 1, 'pertenencia_etnica': 320, 'nombre_grupo_etnico': 4, 'fecha_de_muerte': 22}, 'CAUCA': {'Unnamed: 0': 4408, 'id_de_caso': 4408, 'fecha_de_notificaci_n': 4408, 'c_digo_divipola': 4408, 'ciudad_de_ubicaci_n': 4408, 'atenci_n': 4385, 'edad': 4408, 'sexo': 4408, 'tipo': 4408, 'estado': 4385, 'pa_s_de_procedencia': 4, 'fis': 4408, 'fecha_diagnostico': 4397, 'fecha_recuperado': 2714, 'fecha_reporte_web': 4408, 'tipo_recuperaci_n': 2714, 'codigo_departamento': 4408, 'codigo_pais': 4, 'pertenencia_etnica': 1825, 'nombre_grupo_etnico': 315, 'fecha_de_muerte': 166}, 'CESAR': {'Unnamed: 0': 8385, 'id_de_caso': 8385, 'fecha_de_notificaci_n': 8385, 'c_digo_divipola': 8385, 'ciudad_de_ubicaci_n': 8385, 'atenci_n': 8370, 'edad': 8385, 'sexo': 8385, 'tipo': 8385, 'estado': 8368, 'pa_s_de_procedencia': 4, 'fis': 8385, 'fecha_diagnostico': 8289, 'fecha_recuperado': 4824, 'fecha_reporte_web': 8385, 'tipo_recuperaci_n': 4824, 'codigo_departamento': 8385, 'codigo_pais': 4, 'pertenencia_etnica': 3014, 'nombre_grupo_etnico': 110, 'fecha_de_muerte': 237}, 'CHOCO': {'Unnamed: 0': 3675, 'id_de_caso': 3675, 'fecha_de_notificaci_n': 3675, 'c_digo_divipola': 3675, 'ciudad_de_ubicaci_n': 3675, 'atenci_n': 3663, 'edad': 3675, 'sexo': 3675, 'tipo': 3675, 'estado': 3662, 'pa_s_de_procedencia': 1, 'fis': 3675, 'fecha_diagnostico': 3599, 'fecha_recuperado': 3146, 'fecha_reporte_web': 3675, 'tipo_recuperaci_n': 3146, 'codigo_departamento': 3675, 'codigo_pais': 1, 'pertenencia_etnica': 876, 'nombre_grupo_etnico': 62, 'fecha_de_muerte': 145}, 'CORDOBA': {'Unnamed: 0': 18187, 'id_de_caso': 18187, 'fecha_de_notificaci_n': 18187, 'c_digo_divipola': 18187, 'ciudad_de_ubicaci_n': 18187, 'atenci_n': 18110, 'edad': 18187, 'sexo': 18187, 'tipo': 18187, 'estado': 18106, 'pa_s_de_procedencia': 2, 'fis': 18187, 'fecha_diagnostico': 18130, 'fecha_recuperado': 12140, 'fecha_reporte_web': 18187, 'tipo_recuperaci_n': 12140, 'codigo_departamento': 18187, 'codigo_pais': 2, 'pertenencia_etnica': 6126, 'nombre_grupo_etnico': 856, 'fecha_de_muerte': 1182}, 'CUNDINAMARCA': {'Unnamed: 0': 20539, 'id_de_caso': 20539, 'fecha_de_notificaci_n': 20539, 'c_digo_divipola': 20539, 'ciudad_de_ubicaci_n': 20539, 'atenci_n': 20510, 'edad': 20539, 'sexo': 20539, 'tipo': 20539, 'estado': 20510, 'pa_s_de_procedencia': 39, 'fis': 20539, 'fecha_diagnostico': 20395, 'fecha_recuperado': 13400, 'fecha_reporte_web': 20539, 'tipo_recuperaci_n': 13400, 'codigo_departamento': 20539, 'codigo_pais': 39, 'pertenencia_etnica': 8489, 'nombre_grupo_etnico': 104, 'fecha_de_muerte': 591}, 'GUAINIA': {'Unnamed: 0': 74, 'id_de_caso': 74, 'fecha_de_notificaci_n': 74, 'c_digo_divipola': 74, 'ciudad_de_ubicaci_n': 74, 'atenci_n': 74, 'edad': 74, 'sexo': 74, 'tipo': 74, 'estado': 74, 'pa_s_de_procedencia': 2, 'fis': 74, 'fecha_diagnostico': 74, 'fecha_recuperado': 15, 'fecha_reporte_web': 74, 'tipo_recuperaci_n': 15, 'codigo_departamento': 74, 'codigo_pais': 2, 'pertenencia_etnica': 11, 'nombre_grupo_etnico': 3, 'fecha_de_muerte': 2}, 'GUAVIARE': {'Unnamed: 0': 237, 'id_de_caso': 237, 'fecha_de_notificaci_n': 237, 'c_digo_divipola': 237, 'ciudad_de_ubicaci_n': 237, 'atenci_n': 236, 'edad': 237, 'sexo': 237, 'tipo': 237, 'estado': 236, 'pa_s_de_procedencia': 0, 'fis': 237, 'fecha_diagnostico': 236, 'fecha_recuperado': 187, 'fecha_reporte_web': 237, 'tipo_recuperaci_n': 187, 'codigo_departamento': 237, 'codigo_pais': 0, 'pertenencia_etnica': 106, 'nombre_grupo_etnico': 5, 'fecha_de_muerte': 2}, 'HUILA': {'Unnamed: 0': 3891, 'id_de_caso': 3891, 'fecha_de_notificaci_n': 3891, 'c_digo_divipola': 3891, 'ciudad_de_ubicaci_n': 3891, 'atenci_n': 3885, 'edad': 3891, 'sexo': 3891, 'tipo': 3891, 'estado': 3884, 'pa_s_de_procedencia': 10, 'fis': 3891, 'fecha_diagnostico': 3880, 'fecha_recuperado': 2055, 'fecha_reporte_web': 3891, 'tipo_recuperaci_n': 2055, 'codigo_departamento': 3891, 'codigo_pais': 10, 'pertenencia_etnica': 929, 'nombre_grupo_etnico': 29, 'fecha_de_muerte': 100}, 'LA GUAJIRA': {'Unnamed: 0': 4608, 'id_de_caso': 4608, 'fecha_de_notificaci_n': 4608, 'c_digo_divipola': 4608, 'ciudad_de_ubicaci_n': 4608, 'atenci_n': 4597, 'edad': 4608, 'sexo': 4608, 'tipo': 4608, 'estado': 4597, 'pa_s_de_procedencia': 2, 'fis': 4608, 'fecha_diagnostico': 4600, 'fecha_recuperado': 3149, 'fecha_reporte_web': 4608, 'tipo_recuperaci_n': 3149, 'codigo_departamento': 4608, 'codigo_pais': 2, 'pertenencia_etnica': 1866, 'nombre_grupo_etnico': 239, 'fecha_de_muerte': 219}, 'MAGDALENA': {'Unnamed: 0': 11624, 'id_de_caso': 11624, 'fecha_de_notificaci_n': 11624, 'c_digo_divipola': 11624, 'ciudad_de_ubicaci_n': 11624, 'atenci_n': 11575, 'edad': 11624, 'sexo': 11624, 'tipo': 11624, 'estado': 11573, 'pa_s_de_procedencia': 5, 'fis': 11624, 'fecha_diagnostico': 11554, 'fecha_recuperado': 8544, 'fecha_reporte_web': 11624, 'tipo_recuperaci_n': 8544, 'codigo_departamento': 11624, 'codigo_pais': 5, 'pertenencia_etnica': 6128, 'nombre_grupo_etnico': 23, 'fecha_de_muerte': 666}, 'META': {'Unnamed: 0': 7535, 'id_de_caso': 7535, 'fecha_de_notificaci_n': 7535, 'c_digo_divipola': 7535, 'ciudad_de_ubicaci_n': 7535, 'atenci_n': 7519, 'edad': 7535, 'sexo': 7535, 'tipo': 7535, 'estado': 7518, 'pa_s_de_procedencia': 18, 'fis': 7535, 'fecha_diagnostico': 7520, 'fecha_recuperado': 4728, 'fecha_reporte_web': 7535, 'tipo_recuperaci_n': 4728, 'codigo_departamento': 7535, 'codigo_pais': 18, 'pertenencia_etnica': 2723, 'nombre_grupo_etnico': 58, 'fecha_de_muerte': 168}, 'NARINO': {'Unnamed: 0': 13177, 'id_de_caso': 13177, 'fecha_de_notificaci_n': 13177, 'c_digo_divipola': 13177, 'ciudad_de_ubicaci_n': 13177, 'atenci_n': 13150, 'edad': 13177, 'sexo': 13177, 'tipo': 13177, 'estado': 13147, 'pa_s_de_procedencia': 21, 'fis': 13177, 'fecha_diagnostico': 13009, 'fecha_recuperado': 9956, 'fecha_reporte_web': 13177, 'tipo_recuperaci_n': 9956, 'codigo_departamento': 13177, 'codigo_pais': 21, 'pertenencia_etnica': 6324, 'nombre_grupo_etnico': 811, 'fecha_de_muerte': 491}, 'NORTE DE SANTANDER': {'Unnamed: 0': 9548, 'id_de_caso': 9548, 'fecha_de_notificaci_n': 9548, 'c_digo_divipola': 9548, 'ciudad_de_ubicaci_n': 9548, 'atenci_n': 9533, 'edad': 9548, 'sexo': 9548, 'tipo': 9548, 'estado': 9529, 'pa_s_de_procedencia': 17, 'fis': 9548, 'fecha_diagnostico': 9531, 'fecha_recuperado': 5676, 'fecha_reporte_web': 9548, 'tipo_recuperaci_n': 5676, 'codigo_departamento': 9548, 'codigo_pais': 17, 'pertenencia_etnica': 2289, 'nombre_grupo_etnico': 20, 'fecha_de_muerte': 561}, 'PUTUMAYO': {'Unnamed: 0': 2599, 'id_de_caso': 2599, 'fecha_de_notificaci_n': 2599, 'c_digo_divipola': 2599, 'ciudad_de_ubicaci_n': 2599, 'atenci_n': 2596, 'edad': 2599, 'sexo': 2599, 'tipo': 2599, 'estado': 2596, 'pa_s_de_procedencia': 1, 'fis': 2599, 'fecha_diagnostico': 2596, 'fecha_recuperado': 1678, 'fecha_reporte_web': 2599, 'tipo_recuperaci_n': 1678, 'codigo_departamento': 2599, 'codigo_pais': 1, 'pertenencia_etnica': 999, 'nombre_grupo_etnico': 238, 'fecha_de_muerte': 124}, 'QUINDIO': {'Unnamed: 0': 1008, 'id_de_caso': 1008, 'fecha_de_notificaci_n': 1008, 'c_digo_divipola': 1008, 'ciudad_de_ubicaci_n': 1008, 'atenci_n': 1007, 'edad': 1008, 'sexo': 1008, 'tipo': 1008, 'estado': 1007, 'pa_s_de_procedencia': 17, 'fis': 1008, 'fecha_diagnostico': 1007, 'fecha_recuperado': 541, 'fecha_reporte_web': 1008, 'tipo_recuperaci_n': 541, 'codigo_departamento': 1008, 'codigo_pais': 17, 'pertenencia_etnica': 340, 'nombre_grupo_etnico': 3, 'fecha_de_muerte': 30}, 'RISARALDA': {'Unnamed: 0': 5235, 'id_de_caso': 5235, 'fecha_de_notificaci_n': 5235, 'c_digo_divipola': 5235, 'ciudad_de_ubicaci_n': 5235, 'atenci_n': 5227, 'edad': 5235, 'sexo': 5235, 'tipo': 5235, 'estado': 5226, 'pa_s_de_procedencia': 28, 'fis': 5235, 'fecha_diagnostico': 5231, 'fecha_recuperado': 2783, 'fecha_reporte_web': 5235, 'tipo_recuperaci_n': 2783, 'codigo_departamento': 5235, 'codigo_pais': 28, 'pertenencia_etnica': 1660, 'nombre_grupo_etnico': 63, 'fecha_de_muerte': 91}, 'SANTAFE DE BOGOTA D.C': {'Unnamed: 0': 195137, 'id_de_caso': 195137, 'fecha_de_notificaci_n': 195137, 'c_digo_divipola': 195137, 'ciudad_de_ubicaci_n': 195137, 'atenci_n': 194839, 'edad': 195137, 'sexo': 195137, 'tipo': 195137, 'estado': 194845, 'pa_s_de_procedencia': 393, 'fis': 195137, 'fecha_diagnostico': 195073, 'fecha_recuperado': 128821, 'fecha_reporte_web': 195137, 'tipo_recuperaci_n': 128820, 'codigo_departamento': 195137, 'codigo_pais': 393, 'pertenencia_etnica': 100010, 'nombre_grupo_etnico': 1573, 'fecha_de_muerte': 5389}, 'SANTANDER': {'Unnamed: 0': 14752, 'id_de_caso': 14752, 'fecha_de_notificaci_n': 14752, 'c_digo_divipola': 14752, 'ciudad_de_ubicaci_n': 14752, 'atenci_n': 14729, 'edad': 14752, 'sexo': 14752, 'tipo': 14752, 'estado': 14726, 'pa_s_de_procedencia': 15, 'fis': 14752, 'fecha_diagnostico': 14713, 'fecha_recuperado': 7857, 'fecha_reporte_web': 14752, 'tipo_recuperaci_n': 7857, 'codigo_departamento': 14752, 'codigo_pais': 15, 'pertenencia_etnica': 3703, 'nombre_grupo_etnico': 16, 'fecha_de_muerte': 644}, 'SUCRE': {'Unnamed: 0': 10858, 'id_de_caso': 10858, 'fecha_de_notificaci_n': 10858, 'c_digo_divipola': 10858, 'ciudad_de_ubicaci_n': 10858, 'atenci_n': 10836, 'edad': 10858, 'sexo': 10858, 'tipo': 10858, 'estado': 10837, 'pa_s_de_procedencia': 0, 'fis': 10858, 'fecha_diagnostico': 10813, 'fecha_recuperado': 8001, 'fecha_reporte_web': 10858, 'tipo_recuperaci_n': 8001, 'codigo_departamento': 10858, 'codigo_pais': 0, 'pertenencia_etnica': 6105, 'nombre_grupo_etnico': 677, 'fecha_de_muerte': 479}, 'TOLIMA': {'Unnamed: 0': 6103, 'id_de_caso': 6103, 'fecha_de_notificaci_n': 6103, 'c_digo_divipola': 6103, 'ciudad_de_ubicaci_n': 6103, 'atenci_n': 6079, 'edad': 6103, 'sexo': 6103, 'tipo': 6103, 'estado': 6077, 'pa_s_de_procedencia': 14, 'fis': 6103, 'fecha_diagnostico': 6085, 'fecha_recuperado': 3784, 'fecha_reporte_web': 6103, 'tipo_recuperaci_n': 3784, 'codigo_departamento': 6103, 'codigo_pais': 14, 'pertenencia_etnica': 2580, 'nombre_grupo_etnico': 105, 'fecha_de_muerte': 178}, 'VALLE DEL CAUCA': {'Unnamed: 0': 44394, 'id_de_caso': 44394, 'fecha_de_notificaci_n': 44394, 'c_digo_divipola': 44394, 'ciudad_de_ubicaci_n': 44394, 'atenci_n': 44284, 'edad': 44394, 'sexo': 44394, 'tipo': 44394, 'estado': 44279, 'pa_s_de_procedencia': 127, 'fis': 44394, 'fecha_diagnostico': 44081, 'fecha_recuperado': 31960, 'fecha_reporte_web': 44394, 'tipo_recuperaci_n': 31960, 'codigo_departamento': 44394, 'codigo_pais': 127, 'pertenencia_etnica': 23317, 'nombre_grupo_etnico': 384, 'fecha_de_muerte': 1709}, 'VAUPES': {'Unnamed: 0': 229, 'id_de_caso': 229, 'fecha_de_notificaci_n': 229, 'c_digo_divipola': 229, 'ciudad_de_ubicaci_n': 229, 'atenci_n': 229, 'edad': 229, 'sexo': 229, 'tipo': 229, 'estado': 229, 'pa_s_de_procedencia': 1, 'fis': 229, 'fecha_diagnostico': 229, 'fecha_recuperado': 99, 'fecha_reporte_web': 229, 'tipo_recuperaci_n': 99, 'codigo_departamento': 229, 'codigo_pais': 1, 'pertenencia_etnica': 76, 'nombre_grupo_etnico': 63, 'fecha_de_muerte': 1}, 'VICHADA': {'Unnamed: 0': 36, 'id_de_caso': 36, 'fecha_de_notificaci_n': 36, 'c_digo_divipola': 36, 'ciudad_de_ubicaci_n': 36, 'atenci_n': 36, 'edad': 36, 'sexo': 36, 'tipo': 36, 'estado': 36, 'pa_s_de_procedencia': 0, 'fis': 36, 'fecha_diagnostico': 36, 'fecha_recuperado': 12, 'fecha_reporte_web': 36, 'tipo_recuperaci_n': 12, 'codigo_departamento': 36, 'codigo_pais': 0, 'pertenencia_etnica': 2, 'nombre_grupo_etnico': 0, 'fecha_de_muerte': 1}}
+const countrySVG = document.getElementById("country")
+const total = document.getElementById("total")
+const recovered = document.getElementById("recovered")
+const death = document.getElementById("deaths")
+const regionName = document.getElementById("region-name")
+const width = window.outerWidth
+const height = 500
+let centered;
+
+console.log(width)
+
+const projection = d3.geo.mercator()
+  .scale(1500)
+  // Center the Map in Colombia
+  .center([-74, 4.5])
+  .translate([width / 2, height / 2])
+
+const path = d3.geo.path()
+  .projection(projection);
+
+// Set svg width & height
+const svg = d3.select('#country')
+  .attr('width', width)
+  .attr('height', height);
+
+// Add background
+svg.append('rect')
+  .attr('class', 'background')
+  .attr('width', width)
+  .attr('height', height)
+  .attr('fill', 'transparent')
+  .on('click', clicked);
+
+const g = svg.append('g');
+
+const effectLayer = g.append('g')
+  .classed('effect-layer', true);
+
+const mapLayer = g.append('g')
+  .classed('map-layer', true);
+
+const dummyText = g.append('text')
+  .classed('dummy-text', true)
+  .attr('x', 10)
+  .attr('y', 30)
+  .style('opacity', 0);
+
+// Load map data
+d3.json('https://gist.githubusercontent.com/john-guerra/43c7656821069d00dcbc/raw/3aadedf47badbdac823b00dbe259f6bc6d9e1899/colombia.geo.json', function(error, mapData) {
+  var features = mapData.features;
+  console.log(features.find(f => f.properties.NOMBRE_DPT === "ARCHIPIELAGO DE SAN ANDRES PROVIDENCIA Y SANTA CATALINA"))
+
+
+  // Draw each province as a path
+  mapLayer.selectAll('path')
+      .data(features)
+    .enter().append('path')
+      .attr('d', path)
+      .attr('vector-effect', 'non-scaling-stroke')
+      .style('fill', "#baf2bbff")
+      .style('stroke', '#2d3142ff')
+      .on('mouseover', mouseover)
+      .on('mouseout', mouseout)
+      .on('click', clicked);
+});
+
+// When clicked, zoom in
+function clicked(d) {
+  let x, y, k;
+  const province = d.properties && d.properties.NOMBRE_DPT
+
+  // Compute centroid of the selected path
+  if (d && centered !== d) {
+    var centroid = path.centroid(d);
+    x = centroid[0];
+    y = centroid[1];
+    k = 4;
+    centered = d;
+  } else {
+    x = width / 2;
+    y = height / 2;
+    k = 1;
+    centered = null;
+  }
+
+  // Highlight the clicked province
+  mapLayer.selectAll('path')
+    .style('fill', function(d) {return centered && d === centered ? '#D5708B' : "#baf2bbff";});
+
+  // Zoom
+  g.transition()
+    .duration(750)
+    .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + k + ')translate(' + -x + ',' + -y + ')');
+
+  if (centered) {
+    regionName.innerText = _.capitalize(province)
+    total.innerText = provinceData[province]["fecha_reporte_web"];
+    recovered.innerText = provinceData[province]["fecha_recuperado"];
+    death.innerText = provinceData[province]["fecha_de_muerte"];
+  } else {
+    regionName.innerText = "Seleccione un departamento"
+    total.innerText = 562128;
+    recovered.innerText = 395475;
+    death.innerText = 18931;
+  }
+}
+
+function mouseover(d){
+  // Highlight hovered province
+  d3.select(this).style('fill', 'orange');
+}
+
+function mouseout(d){
+  // Reset province color
+  mapLayer.selectAll('path')
+    .style('fill', function(d){return centered && d===centered ? '#D5708B' : "#baf2bbff"});
+}
+  </script>
+</div>
+
+  </section>
+  </body>
 </html>

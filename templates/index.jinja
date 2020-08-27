@@ -1,0 +1,43 @@
+{% extends "base.jinja" %}
+
+{% block content %}
+<div class="columns">
+  <div class="column">
+    <svg id="country"></svg>
+  </div>
+</div>
+
+<div class="info">
+  <h2 class="title" id="region-name"></h2>
+
+  <div class="columns">
+    <div class="column">
+      <div class="tile is-ancestor has-text-centered">
+        <article class="tile is-child notification is-warning">
+          <p class="title">Casos reportados</p>
+          <p class="subtitle" id="total">{{ data | length }}</p>
+        </article>
+      </div>
+    </div>
+    <div class="column">
+      <div class="tile is-ancestor has-text-centered">
+        <article class="tile is-child notification is-success">
+          <p class="title">Recuperados</p>
+          <p class="subtitle" id="recovered">{{ data.dropna(subset=["fecha_recuperado"]) | length }}</p>
+        </article>
+      </div>
+    </div>
+    <div class="column">
+      <div class="tile is-ancestor has-text-centered">
+        <article class="tile is-child notification is-danger">
+          <p class="title">Fallecidos</p>
+          <p class="subtitle" id="deaths">{{ data.dropna(subset=["fecha_de_muerte"]) | length }}</p>
+        </article>
+      </div>
+    </div>
+  </div>
+  <script>
+    {% include 'map.jinja' %}
+  </script>
+</div>
+{% endblock %}
