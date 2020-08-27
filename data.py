@@ -15,12 +15,40 @@ import pandas as pd
 from sodapy import Socrata
 import unicodedata
 
+def format_data(df):
+    df_copy = df.copy()
+    data = dict()
+
+    data["summary"] = {
+        "total": len(df_copy),
+        "recovered": len(df_copy.dropna(subset=["fecha_recuperado"])),
+        "deaths": len(df_copy.dropna(subset=["fecha_de_muerte"]))
+    }
+
+    history = df_copy.groupby("fecha_reporte_web").count().sort_index()
+    data["history"] = {
+        "date": history.index.tolist(),
+        "total": history["sexo"].tolist(),
+        "recovered": history["fecha_recuperado"].tolist(),
+        "deaths": history["fecha_de_muerte"].tolist()
+    }
+
+    return data
+
+def replace_tildes(x):
+    normalized_x = unicodedata.normalize('NFKD', x)
+    normalized_x = normalized_x.encode('ASCII', 'ignore').decode('utf-8')
+    normalized_x = normalized_x.upper()
+
+    return normalized_x
+
 province_name_map = {
     "Bogotá D.C.": "SANTAFE DE BOGOTA D.C",
     "Barranquilla D.E.": "ATLANTICO",
     "Cartagena D.T. y C.": "BOLIVAR",
     "Santa Marta D.T. y C.": "MAGDALENA",
-    "Buenaventura D.E.": "VALLE DEL CAUCA"
+    "Buenaventura D.E.": "VALLE DEL CAUCA",
+    "Nariño": "NARIÑO"
 }
 
 
@@ -34,7 +62,9 @@ df = pd.DataFrame.from_dict(results)
 # df = pd.read_csv("data.csv")
 
 df["sexo"] = df["sexo"].apply(lambda x: "Masculino" if x.upper() == "M" else "Femenino")
-df["departamento"] = df["departamento"].apply(lambda x: province_name_map.get(x, unicodedata.normalize('NFKD', x).encode('ASCII', 'ignore').decode('utf-8')).upper())
+df["departamento"] = df["departamento"].apply(lambda x: province_name_map.get(x, replace_tildes(x)).upper())
+data = format_data(df)
+data_by_province = {province: format_data(df[df["departamento"] == province]) for province in df["departamento"].unique()}
 cases_by_province = df.groupby(["departamento"]).count()
 df.shape
 

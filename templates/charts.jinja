@@ -1,0 +1,47 @@
+const chartsCanvas = [
+    {data: 'total', name: 'Historico de casos reportados'}, 
+    {data: 'recovered', name: 'Historico de personas recuperadas'},
+    {data: 'deaths', name: 'Historico de personas fallecidas'}
+]
+const charts = {}
+
+chartsCanvas.forEach(canvas => {
+    const canvasElement = document.getElementById(`history-${canvas.data}`).getContext('2d')
+
+    charts[canvas.data] = new Chart(canvasElement, {
+    type: 'line',
+    data: {
+        labels: data.history.date,
+        datasets: [{
+            data: data.history[canvas.data],
+            pointRadius: 0,
+            lineTension: 0,
+            borderWidth: 2,
+            fill: false,
+            borderColor: "#FF3860"
+        }]
+    },
+    options: {
+        animation: {
+            duration: 0
+        },
+        scales: {
+            xAxes: [{
+                type: 'time',
+                time: {
+                    format: "YYYY-MM-DD",
+                    tooltipFormat: "ll"
+                }
+            }]
+        },
+        legend: {
+            display: false
+        },
+        title: {
+            display: true,
+            text: canvas.name,
+            fontSize: 16
+        }
+    }
+})
+})

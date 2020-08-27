@@ -1,19 +1,18 @@
-const provinceData = {{ cases_by_province.to_dict("index") }}
 const countrySVG = document.getElementById("country")
 const total = document.getElementById("total")
 const recovered = document.getElementById("recovered")
 const death = document.getElementById("deaths")
 const regionName = document.getElementById("region-name")
-const width = window.outerWidth
-const height = 500
+const width = window.outerWidth / 2
+const height = window.outerHeight
 let centered;
 
 console.log(width)
 
 const projection = d3.geo.mercator()
-  .scale(1500)
+  .scale(2500)
   // Center the Map in Colombia
-  .center([-74, 4.5])
+  .center([-73, 2.5])
   .translate([width / 2, height / 2])
 
 const path = d3.geo.path()
@@ -68,7 +67,7 @@ d3.json('https://gist.githubusercontent.com/john-guerra/43c7656821069d00dcbc/raw
 // When clicked, zoom in
 function clicked(d) {
   let x, y, k;
-  const province = d.properties && d.properties.NOMBRE_DPT
+  const province = d && d.properties && d.properties.NOMBRE_DPT
 
   // Compute centroid of the selected path
   if (d && centered !== d) {
@@ -95,14 +94,29 @@ function clicked(d) {
 
   if (centered) {
     regionName.innerText = _.capitalize(province)
-    total.innerText = provinceData[province]["fecha_reporte_web"];
-    recovered.innerText = provinceData[province]["fecha_recuperado"];
-    death.innerText = provinceData[province]["fecha_de_muerte"];
+    total.innerText = provinceData[province].summary.total;
+    recovered.innerText = provinceData[province].summary.recovered;
+    death.innerText = provinceData[province].summary.deaths;
+
+    Object.keys(charts).forEach(c => {
+      const chart = charts[c]
+      chart.data.labels = provinceData[province].history.date
+      chart.data.datasets[0].data = provinceData[province].history[c]
+      chart.update()
+    })
+
   } else {
     regionName.innerText = "Seleccione un departamento"
-    total.innerText = {{ data | length }};
-    recovered.innerText = {{ data.dropna(subset=["fecha_recuperado"]) | length }};
-    death.innerText = {{ data.dropna(subset=["fecha_de_muerte"]) | length }};
+    total.innerText = data.summary.total;
+    recovered.innerText = data.summary.recovered;
+    death.innerText = data.summary.deaths;
+
+    Object.keys(charts).forEach(c => {
+      const chart = charts[c]
+      chart.data.labels = data.history.date
+      chart.data.datasets[0].data = data.history[c]
+      chart.update()
+    })
   }
 }
 
