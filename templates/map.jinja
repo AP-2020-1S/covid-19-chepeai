@@ -91,33 +91,27 @@ function clicked(d) {
   g.transition()
     .duration(750)
     .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + k + ')translate(' + -x + ',' + -y + ')');
+  
+  const newData = centered ? provinceData[province] : data
 
-  if (centered) {
-    regionName.innerText = _.capitalize(province)
-    total.innerText = provinceData[province].summary.total;
-    recovered.innerText = provinceData[province].summary.recovered;
-    death.innerText = provinceData[province].summary.deaths;
+  regionName.innerText = centered ? _.capitalize(province) : "Seleccione un departamento"
+  total.innerText = newData.summary.total;
+  recovered.innerText = newData.summary.recovered;
+  death.innerText = newData.summary.deaths;
 
-    Object.keys(charts).forEach(c => {
-      const chart = charts[c]
-      chart.data.labels = provinceData[province].history.date
-      chart.data.datasets[0].data = provinceData[province].history[c]
-      chart.update()
-    })
+  Object.keys(historyCharts).forEach(c => {
+    const chart = historyCharts[c]
+    chart.data.labels = newData.history.date
+    chart.data.datasets[0].data = newData.history[c]
+    chart.update()
+  })
 
-  } else {
-    regionName.innerText = "Seleccione un departamento"
-    total.innerText = data.summary.total;
-    recovered.innerText = data.summary.recovered;
-    death.innerText = data.summary.deaths;
-
-    Object.keys(charts).forEach(c => {
-      const chart = charts[c]
-      chart.data.labels = data.history.date
-      chart.data.datasets[0].data = data.history[c]
-      chart.update()
-    })
-  }
+  Object.keys(summaryCharts).forEach(c => {
+    const chart = summaryCharts[c]
+    chart.data.labels = Object.keys(newData.summary[c])
+    chart.data.datasets[0].data = Object.values(newData.summary[c])
+    chart.update()
+  })
 }
 
 function mouseover(d){

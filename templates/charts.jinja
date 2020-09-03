@@ -1,14 +1,30 @@
-const chartsCanvas = [
+const colors = {
+    primary: 'hsl(171, 100%, 41%)',
+    link: 'hsl(217, 71%, 53%)',
+    info: 'hsl(204, 86%, 53%)',
+    success: 'hsl(141, 53%, 53%)',
+    warning: 'hsl(48, 100%, 67%)',
+    danger: '#FF3860'
+}
+
+const historyCanvas = [
     {data: 'total', name: 'Historico de casos reportados'}, 
     {data: 'recovered', name: 'Historico de personas recuperadas'},
     {data: 'deaths', name: 'Historico de personas fallecidas'}
 ]
-const charts = {}
 
-chartsCanvas.forEach(canvas => {
+const summaryCanvas = [
+    {data: 'sex', name: 'Distribución por sexo', type:'pie', legend: true, colors: [colors.primary, colors.info]},
+    {data: 'city', name: 'Top 5 de ciudades con casos activos', type: 'horizontalBar', legend: false}
+]
+const historyCharts = {}
+
+const summaryCharts = {}
+
+historyCanvas.forEach(canvas => {
     const canvasElement = document.getElementById(`history-${canvas.data}`).getContext('2d')
 
-    charts[canvas.data] = new Chart(canvasElement, {
+    historyCharts[canvas.data] = new Chart(canvasElement, {
     type: 'line',
     data: {
         labels: data.history.date,
@@ -18,7 +34,7 @@ chartsCanvas.forEach(canvas => {
             lineTension: 0,
             borderWidth: 2,
             fill: false,
-            borderColor: "#FF3860"
+            borderColor: colors.danger
         }]
     },
     options: {
@@ -44,4 +60,32 @@ chartsCanvas.forEach(canvas => {
         }
     }
 })
+})
+
+summaryCanvas.forEach(canvas =>  {
+    const canvasElement = document.getElementById(`${canvas.data}-dist`).getContext('2d')
+    const labels = Object.keys(data.summary[canvas.data])
+    const values = Object.values(data.summary[canvas.data])
+    summaryCharts[canvas.data] = new Chart(canvasElement, {
+        type: canvas.type,
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    data: values,
+                    backgroundColor: canvas.colors || Array.from({length: values.length}, () => colors.danger)
+                }
+            ],
+        },
+        options: {
+            title: {
+                display: true,
+                text: canvas.name,
+                fontSize: 16
+            },
+            legend: {
+                display: canvas.legend
+            }
+        },
+    })
 })

@@ -19,10 +19,13 @@ def format_data(df):
     df_copy = df.copy()
     data = dict()
 
+    active_cases_per_city = df_copy[np.logical_xor(df_copy["fecha_recuperado"].isnull(), df_copy["fecha_recuperado"].isnull())]["ciudad_de_ubicaci_n"].value_counts()[:5].to_dict()
     data["summary"] = {
         "total": len(df_copy),
         "recovered": len(df_copy.dropna(subset=["fecha_recuperado"])),
-        "deaths": len(df_copy.dropna(subset=["fecha_de_muerte"]))
+        "deaths": len(df_copy.dropna(subset=["fecha_de_muerte"])),
+        "sex": df_copy["sexo"].value_counts().to_dict(),
+        "city": active_cases_per_city
     }
 
     history = df_copy.groupby("fecha_reporte_web").count().sort_index()

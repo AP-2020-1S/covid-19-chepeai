@@ -5,7 +5,7 @@
   <div class="column" style="border-right: 6px solid black; padding-right: 0">
     <svg id="country"></svg>
   </div>
-  <div class="column">
+  <div id="chart-container" class="column" style="overflow-y: scroll; padding-bottom: 3rem">
   <div class="columns">
     <div class="column">
       <div class="tile is-ancestor has-text-centered">
@@ -49,9 +49,20 @@
       <canvas id="history-deaths"></canvas>
     </div>
   </div>
+
+  <div class="columns">
+    <div class="column">
+      <canvas id="sex-dist"></canvas>
+    </div>
+    <div class="column">
+      <canvas id="city-dist"></canvas>
+    </div>
+  </div>
   <script>
     const data = {{ data }}
     const provinceData = {{ data_by_province }}
+    const chartContainer = document.getElementById("chart-container")
+    chartContainer.style.height = `${window.innerHeight}px`
     {% include 'map.jinja' %}
     {% include 'charts.jinja' %}
   </script>
