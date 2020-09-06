@@ -48,8 +48,6 @@ const dummyText = g.append('text')
 // Load map data
 d3.json('https://gist.githubusercontent.com/john-guerra/43c7656821069d00dcbc/raw/3aadedf47badbdac823b00dbe259f6bc6d9e1899/colombia.geo.json', function(error, mapData) {
   var features = mapData.features;
-  console.log(features.find(f => f.properties.NOMBRE_DPT === "ARCHIPIELAGO DE SAN ANDRES PROVIDENCIA Y SANTA CATALINA"))
-
 
   // Draw each province as a path
   mapLayer.selectAll('path')
@@ -57,8 +55,8 @@ d3.json('https://gist.githubusercontent.com/john-guerra/43c7656821069d00dcbc/raw
     .enter().append('path')
       .attr('d', path)
       .attr('vector-effect', 'non-scaling-stroke')
-      .style('fill', "#baf2bbff")
-      .style('stroke', '#2d3142ff')
+      .style('fill', colors.success)
+      .style('stroke', '#ffffff')
       .on('mouseover', mouseover)
       .on('mouseout', mouseout)
       .on('click', clicked);
@@ -85,7 +83,7 @@ function clicked(d) {
 
   // Highlight the clicked province
   mapLayer.selectAll('path')
-    .style('fill', function(d) {return centered && d === centered ? '#D5708B' : "#baf2bbff";});
+    .style('fill', function(d) {return centered && d === centered ? colors.danger : colors.success;});
 
   // Zoom
   g.transition()
@@ -94,7 +92,7 @@ function clicked(d) {
   
   const newData = centered ? provinceData[province] : data
 
-  regionName.innerText = centered ? _.capitalize(province) : "Seleccione un departamento"
+  regionName.innerText = centered ? _.startCase(province.toLowerCase()) : "Seleccione un departamento"
   total.innerText = newData.summary.total;
   recovered.innerText = newData.summary.recovered;
   death.innerText = newData.summary.deaths;
@@ -116,11 +114,11 @@ function clicked(d) {
 
 function mouseover(d){
   // Highlight hovered province
-  d3.select(this).style('fill', 'orange');
+  d3.select(this).style('fill', function(d){return centered && d===centered ? colors.danger : colors.warning});
 }
 
 function mouseout(d){
   // Reset province color
   mapLayer.selectAll('path')
-    .style('fill', function(d){return centered && d===centered ? '#D5708B' : "#baf2bbff"});
+    .style('fill', function(d){return centered && d===centered ? colors.danger : colors.success});
 }

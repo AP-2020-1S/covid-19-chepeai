@@ -1,5 +1,6 @@
 from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
-from data import data, data_by_province    
+from dashboard import data, data_by_province
+from model import preds  
 import os
 
 loader = FileSystemLoader("templates")
@@ -7,7 +8,8 @@ env = Environment(loader=loader, autoescape=select_autoescape(['html', 'xml']))
 
 template_files = [
     ('index', {"data": data, "data_by_province": data_by_province}),
-    ('about', dict())
+    ('model', {"preds": preds}),
+    ('about', dict()),
 ]
 
 for t, data in template_files:

@@ -5,68 +5,69 @@
   <div class="column" style="border-right: 6px solid black; padding-right: 0">
     <svg id="country"></svg>
   </div>
-  <div id="chart-container" class="column" style="overflow-y: scroll; padding-bottom: 3rem">
-  <div class="columns">
-    <div class="column">
-      <div class="tile is-ancestor has-text-centered">
-        <article class="tile is-child notification is-warning">
-          <p class="title is-4">Casos reportados</p>
-          <p class="subtitle" id="total">{{ data.summary.total }}</p>
-        </article>
+  <div class="column" style="padding-left: 0;">
+    <div id="chart-container" style="overflow-y: scroll; overflow-x: hidden; padding-bottom: 3rem">
+      <div class="columns">
+        <div class="column">
+          <div class="tile is-ancestor has-text-centered">
+            <article class="tile is-child notification is-warning">
+              <p class="title is-4">Casos reportados</p>
+              <p class="subtitle" id="total">{{ data.summary.total }}</p>
+            </article>
+          </div>
+        </div>
+        <div class="column">
+          <div class="tile is-ancestor has-text-centered">
+            <article class="tile is-child notification is-success">
+              <p class="title is-4">Recuperados</p>
+              <p class="subtitle" id="recovered">{{ data.summary.recovered }}</p>
+            </article>
+          </div>
+        </div>
+        <div class="column">
+          <div class="tile is-ancestor has-text-centered">
+            <article class="tile is-child notification is-danger">
+              <p class="title is-4">Fallecidos</p>
+              <p class="subtitle" id="deaths">{{ data.summary.deaths }}</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="title" id="region-name">Seleccione un departamento</h2>
+
+      <div class="columns">
+        <div class="column has-text-centered">
+          <canvas id="history-total"></canvas>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column has-text-centered">
+          <canvas id="history-recovered"></canvas>
+      </div>
+
+      <div class="column has-text-centered">
+        <canvas id="history-deaths"></canvas>
       </div>
     </div>
-    <div class="column">
-      <div class="tile is-ancestor has-text-centered">
-        <article class="tile is-child notification is-success">
-          <p class="title is-4">Recuperados</p>
-          <p class="subtitle" id="recovered">{{ data.summary.recovered }}</p>
-        </article>
+
+    <div class="columns">
+      <div class="column">
+        <canvas id="sex-dist"></canvas>
+      </div>
+      <div class="column">
+        <canvas id="city-dist"></canvas>
       </div>
     </div>
-    <div class="column">
-      <div class="tile is-ancestor has-text-centered">
-        <article class="tile is-child notification is-danger">
-          <p class="title is-4">Fallecidos</p>
-          <p class="subtitle" id="deaths">{{ data.summary.deaths }}</p>
-        </article>
-      </div>
-    </div>
+    <script>
+      const data = {{ data }}
+      const provinceData = {{ data_by_province }}
+      const chartContainer = document.getElementById("chart-container")
+      chartContainer.style["max-height"] = `${window.innerHeight}px`
+      {% include 'map.jinja' %}
+      {% include 'charts.jinja' %}
+    </script>
   </div>
-
-  <h2 class="title" id="region-name">Seleccione un departamento</h2>
-
-  <div class="columns">
-    <div class="column has-text-centered">
-      <canvas id="history-total"></canvas>
-    </div>
-  </div>
-  <div class="columns">
-    <div class="column has-text-centered">
-      <canvas id="history-recovered"></canvas>
-    </div>
-
-    <div class="column has-text-centered">
-      <canvas id="history-deaths"></canvas>
-    </div>
-  </div>
-
-  <div class="columns">
-    <div class="column">
-      <canvas id="sex-dist"></canvas>
-    </div>
-    <div class="column">
-      <canvas id="city-dist"></canvas>
-    </div>
-  </div>
-  <script>
-    const data = {{ data }}
-    const provinceData = {{ data_by_province }}
-    const chartContainer = document.getElementById("chart-container")
-    chartContainer.style.height = `${window.innerHeight}px`
-    {% include 'map.jinja' %}
-    {% include 'charts.jinja' %}
-  </script>
-</div>
 </div>
 
 

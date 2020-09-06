@@ -1,0 +1,59 @@
+{% extends "base.jinja" %}
+
+{% block content %}
+    <div class="columns">
+    <div class="column is-3">
+        <article class="panel is-warning">
+            <p class="panel-heading">
+                Top 5 ciudades
+            </p>
+            {% for cityData in preds.cities %}
+                <a class="panel-block" href="javascript:toggleActive({{loop.index0}}, '{{cityData.Ciudad}}')">
+                    <span class="panel-icon">
+                        <i class="fas fa-city" aria-hidden="true"></i>
+                    </span>
+                    {{cityData.Ciudad}}
+                </a>
+            {% endfor %}
+        </article>
+        <div class="container">
+            <h2 class="subtitle is-6">
+                <b>NOTA: </b>Para saber mas acerca de como se generaron las predicciones en este pagina, 
+                ingrese a la seccion <a href="about.html">Info</a>
+            </h2>
+        </div>
+    </div>
+    <div class="column">
+        <div class="columns">
+            <div class="column">
+                <canvas id="preds-s-chart"></canvas>
+                <canvas id="preds-r-chart"></canvas>
+            </div>
+            <div class="column">
+                <canvas id="preds-i-chart"></canvas>
+                <canvas id="preds-d-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+
+    const options = document.getElementsByClassName("panel-block")
+    const dates = {{ preds.dates }}
+    const cityPreds = {{ preds.cities }}
+    let activeId = 0
+    let activeCity = "{{ preds.cities[0].Ciudad }}"
+    options[activeId].classList.add("is-active")
+    function toggleActive(i, city) {
+        options[activeId].classList.remove("is-active")
+        options[i].classList.add("is-active")
+        activeId = i
+        activeCity = city
+        changeCharts(i)
+    }
+
+    {% include 'preds.jinja' %}
+
+</script>
+{% endblock %}
