@@ -25,7 +25,7 @@ Use la metodología basada en las siguientes fases o dimensiones del problema (v
 4. Metodologías propuestas.
 5. Desarrollo de los modelos.
 6. Despliegue de los resultados (producto de datos)
-7. Gestión del ciclo de vida del producto de datos. 
+7. Gestión del ciclo de vida del producto de datos.
 
 Puede consultar las metodologías CRISP-DM, ASUM-DM u otras similares como complemento a las fases especificadas.
 
@@ -34,7 +34,7 @@ Puede consultar las metodologías CRISP-DM, ASUM-DM u otras similares como compl
 
 Los requerimientos del sistema son los siguientes:
 
-* El producto de datos propuesto debe descargar la última información dispobile de forma automática cada vez que se ejecute. 
+* El producto de datos propuesto debe descargar la última información dispobile de forma automática cada vez que se ejecute.
 
 * La limpieza de datos, recalibración de los modelos, etc, deben ejecutarse automaticamente sin intervención humana. Es decir, el usuario ejecuta unicamente la rutina principal y todo el sistema se actualiza automaticamente.
 
@@ -53,19 +53,19 @@ El producto de datos debe contener información sobre los pasos de la metodolog�
 
 El repo debe contener el producto desarrollado.
 
-## ¿Cómo actualizar el Dashboard?
+### ¿Cómo actualizar el Dashboard?
 
 Siga el siguiente conjunto de pasos:
 - Clone este respositorio.
-- Consulte los requerimientos e instale los que hagan falta.
+- Consulte e instale los requisitos.
 - Haciendo uso de la terminal ejecute:
-    - python3 app.py
+    - _python3 app.py_
 - En la carpeta `./docs` encontrará el archivo `index.html`
 - Una vez se muestre la página de inicio en el navegador navegue en las columnas:
     - Analítica Predictiva 2020-1S
     - Predicciones
     - Info
 
-## Requisitos
+### Requisitos
 
 Consulte el archivo: `requirements.txt`
