@@ -53,7 +53,19 @@ El producto de datos debe contener información sobre los pasos de la metodolog�
 
 El repo debe contener el producto desarrollado.
 
+## ¿Cómo actualizar el Dashboard?
 
+Siga el siguiente conjunto de pasos:
+- Clone este respositorio.
+- Consulte los requerimientos e instale los que hagan falta.
+- Haciendo uso de la terminal ejecute:
+    - python3 app.py
+- En la carpeta `./docs` encontrará el archivo `index.html`
+- Una vez se muestre la página de inicio en el navegador navegue en las columnas:
+    - Analítica Predictiva 2020-1S
+    - Predicciones
+    - Info
 
+## Requisitos
 
-
+Consulte el archivo: `requirements.txt`

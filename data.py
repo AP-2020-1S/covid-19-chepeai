@@ -4,6 +4,7 @@ usados por los modulos para crear los dashboard
 
 """
 import unicodedata
+import numpy as np
 import pandas as pd
 from sodapy import Socrata
 
@@ -23,13 +24,60 @@ province_name_map = {
     "Nariño": "NARIÑO"
 }
 
+#Descarga de la información
 socrata_domain = "www.datos.gov.co"
-socrata_dataset_identifier = "gt2j-8ykr"
-
 client = Socrata(socrata_domain, None)
-results = client.get(socrata_dataset_identifier,limit=1000000000)
-df = pd.DataFrame.from_dict(results)
-# df.to_csv("data.csv")
-# df = pd.read_csv("data.csv")
+
+try:
+    #Descarga data casos
+    socrata_dataset_identifier = "gt2j-8ykr"
+    results = client.get(socrata_dataset_identifier,limit=1000000000)
+
+    df = pd.DataFrame.from_dict(results)
+    df.to_csv("./spreadsheets/data_covid.csv", index=False)
+
+    #Descarga data pruebas
+    socrata_dataset_identifier = "8835-5baf"
+    results = client.get(socrata_dataset_identifier,limit=1000000000)
+
+    df_pruebas = pd.DataFrame.from_dict(results)
+    df_pruebas.to_csv('./spreadsheets/pruebas_covid.csv', index=False)
+
+except:
+    df = pd.read_csv('./spreadsheets/data_covid.csv')
+    df_pruebas = pd.read_csv('./spreadsheets/pruebas_covid.csv')
+
+
+#Estandarización
 df["sexo"] = df["sexo"].apply(lambda x: "Masculino" if x.upper() == "M" else "Femenino")
 df["departamento"] = df["departamento"].apply(lambda x: province_name_map.get(x, replace_tildes(x)).upper())
+
+df.fillna(value=np.NaN, inplace=True)
+
+to_drop = ['id_de_caso', 'fis', 'c_digo_divipola', 'codigo_departamento','codigo_pais']
+
+df.drop(labels=to_drop, axis=1, inplace=True)
+
+#date_columns = ['fecha_de_muerte',
+#                'fecha_recuperado',
+#                'fecha_reporte_web',
+#                'fecha_diagnostico',
+#                'fecha_de_notificaci_n']
+
+#for col in date_columns:
+ #   df[col] = pd.to_datetime(df[col])
+
+df['edad'] = df['edad'].apply(lambda x: int(x))
+
+cat_cols = ['sexo', 'tipo', 'estado', 'atenci_n', 'pertenencia_etnica', 'tipo_recuperaci_n']
+
+for col in cat_cols:
+    df[col] = df[col].apply(lambda x: str(x).strip().capitalize() if str(x) != 'N/A' else str(x).strip())
+
+#Estandarización data pruebas
+df_pruebas.replace("Acumulado Feb", value="2020-02-29T00:00:00.000", inplace = True)
+df_pruebas['fecha'] = pd.to_datetime(df_pruebas['fecha'])
+df_pruebas['acumuladas']= df_pruebas['acumuladas'].astype('int')
+df_pruebas['acumuladas'] = df_pruebas['acumuladas'].diff()
+
+df_pruebas.fillna(0, inplace=True)
