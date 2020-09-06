@@ -131,4 +131,6 @@ dmypy.json
 
 #Other
 /spreadsheets/data_covid.csv
-
+.vscode
+.vscode/
+.vscode/*
