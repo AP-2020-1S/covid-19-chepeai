@@ -1,6 +1,6 @@
 from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
-from dashboard import data, data_by_province
-from model import preds  
+from utils.dashboard import data, data_by_province
+from utils.model import preds  
 import os
 
 loader = FileSystemLoader("templates")

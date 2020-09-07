@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from data import df
+from utils.data import df
 
 dates = pd.DataFrame(df["fecha_reporte_web"].unique(), columns=["fecha_reporte_web"])
 

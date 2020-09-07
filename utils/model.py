@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
-from data import df
+from utils.data import df
 from scipy.integrate import odeint
 from scipy.optimize import minimize
 
