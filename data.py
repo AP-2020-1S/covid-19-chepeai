@@ -3,6 +3,7 @@ Archivo para descargar los datos de https://www.datos.gov.co para ser
 usados por los modulos para crear los dashboard
 
 """
+import os
 import unicodedata
 import numpy as np
 import pandas as pd
@@ -28,24 +29,25 @@ province_name_map = {
 socrata_domain = "www.datos.gov.co"
 client = Socrata(socrata_domain, None)
 
-try:
-    #Descarga data casos
+if os.path.exists("./spreadsheets/data_covid.csv"):
+    df = pd.read_csv('./spreadsheets/data_covid.csv')
+else:
     socrata_dataset_identifier = "gt2j-8ykr"
     results = client.get(socrata_dataset_identifier,limit=1000000000)
 
     df = pd.DataFrame.from_dict(results)
     df.to_csv("./spreadsheets/data_covid.csv", index=False)
 
-    #Descarga data pruebas
+if os.path.exists("./spreadsheets/pruebas_covid.csv"):
+    df_pruebas = pd.read_csv('./spreadsheets/pruebas_covid.csv')
+else:
     socrata_dataset_identifier = "8835-5baf"
     results = client.get(socrata_dataset_identifier,limit=1000000000)
 
     df_pruebas = pd.DataFrame.from_dict(results)
     df_pruebas.to_csv('./spreadsheets/pruebas_covid.csv', index=False)
-
-except:
-    df = pd.read_csv('./spreadsheets/data_covid.csv')
-    df_pruebas = pd.read_csv('./spreadsheets/pruebas_covid.csv')
+    
+    
 
 
 #Estandarización

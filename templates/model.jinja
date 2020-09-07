@@ -1,5 +1,9 @@
 {% extends "base.jinja" %}
 
+{% block style %}
+
+{% endblock %}
+
 {% block content %}
     <div class="columns">
     <div class="column is-3">
@@ -16,10 +20,29 @@
                 </a>
             {% endfor %}
         </article>
-        <div class="container">
-            <h2 class="subtitle is-6">
-                <b>Nota: </b>Si desea obtener más detalles acerca de este proyecto ingrese a<a href="about.html">Info</a>
-            </h2>
+        <div class="hero has-text-centered">
+            <div class="hero-body">
+                <div class="content is-fluid">
+                    <h2 class="title">Predicciones</h2>
+                    <p>
+                        Las gráficas mostradas en esta pagina corresponden a las predicciones de nuestro modelo para los proximos 
+                        90 días en las 5 ciudades con mas contagios en el país. El modelo de predicción usado es una mezcla entre
+                        un modelo ARIMA y un modelo tipo SIR. Las variables graficadas corresponden a las usadas por el modelo SIR:
+                    </p>
+                    <ul>
+                        <li><b>Susceptibles:</b> Son aquellas personas que aun no han sido infectadas por el virus, y que de entrar en
+                        contacto con una persona infectada, pueden pasar a ser parte de la población de infectados</li>
+                        <li><b>Infectados:</b> Son aquellas personas que padecen del virus y estan en capacidad contagiar a las persona
+                        susceptibles, recuperarse o morir</li>
+                        <li><b>Recuperados:</b> Corresponde a las personas que estuvieron infectadas en algun momento, pero se recuperaron
+                        satisfactoriamente. Se supone que la población recuperada ya es inmune al virus, por lo tanto no puede volver
+                        a infectarse ni contagiar a la población susceptible.</li>
+                    </ul>
+                    <p>
+                        Adicionalmente, se incluyo una cuarta variable que representa las personas que mueren debido al virus.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
     <div class="column">
