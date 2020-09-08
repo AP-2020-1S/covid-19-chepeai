@@ -4,6 +4,7 @@ import pandas as pd
 from utils.data import df
 from scipy.integrate import odeint
 from scipy.optimize import minimize
+from statsmodels.tsa.arima.model import ARIMA
 
 class SIR:
     def __init__(self, population, n):
@@ -67,7 +68,6 @@ class SIR:
 
         return Y
 
-
 poblacion_ciudades = pd.read_csv("spreadsheets/top20ciudades.csv")
 dates_df = pd.DataFrame(df["fecha_reporte_web"].unique(), columns=["fecha_reporte_web"])
 
@@ -113,12 +113,21 @@ for city in top_5:
 
     data = np.array([S, I, R, M])
 
-    model = SIR(city_pop, 3)
+    sir_model = SIR(city_pop, 3)
+
     y0 = [city_pop, 1, 0, 0]
     t = list(range(data.shape[1]))
-    model.fit(y0, t, data)
 
-    city_pred = model.predict(days)
+    sir_model.fit(y0, t, data)
+    arima_model = [ARIMA(d, order=(1,0,0), enforce_stationarity=False).fit() for d in data]
+
+    sir_pred = sir_model.predict(days)
+    arima_pred = np.array([m.forecast(steps=days) for m in arima_model])
+
+    sir_weights = np.hstack((np.zeros(15), np.linspace(0, 1, 15), np.ones(60)))
+    arima_weights = 1 - sir_weights
+
+    city_pred = sir_weights * sir_pred + arima_weights * arima_pred
 
     preds["cities"].append({
         "Ciudad": city,
