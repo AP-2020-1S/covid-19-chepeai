@@ -78,7 +78,7 @@ top_5 = cities.sort_values("casos", ascending=False)["ciudad_de_ubicaci_n"].toli
 
 # Número de días para hacer el pronostico
 now = datetime.now()
-days = 90
+days = 60
 dates = [(now + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(days)]
 
 cities_data = dict()
@@ -124,7 +124,8 @@ for city in top_5:
     sir_pred = sir_model.predict(days)
     arima_pred = np.array([m.forecast(steps=days) for m in arima_model])
 
-    sir_weights = np.hstack((np.zeros(15), np.linspace(0, 1, 15), np.ones(60)))
+    sigmoid = lambda x: 1 / (1 + np.exp(-x))
+    sir_weights = np.hstack((np.linspace(0, 0.8, 5), np.linspace(0.8, 1, 10, endpoint=True), np.ones(45)))
     arima_weights = 1 - sir_weights
 
     city_pred = sir_weights * sir_pred + arima_weights * arima_pred
@@ -137,6 +138,3 @@ for city in top_5:
         "Muertos": city_pred[3].tolist(),
 
     }) 
-
-
-# Este es el formato en que se debe enviar la data para ser pintada en el reporte
