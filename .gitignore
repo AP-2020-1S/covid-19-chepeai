@@ -132,3 +132,8 @@ dmypy.json
 #Other
 /spreadsheets/data_covid.csv
 /spreadsheets/pruebas_covid.csv
+/spreadsheets/test_Barranquilla.csv
+/spreadsheets/test_Bogotá D.C..csv
+/spreadsheets/test_Cali.csv
+/spreadsheets/test_Cartagena de Indias.csv
+/spreadsheets/test_Medellín.csv
